@@ -18,7 +18,9 @@ Proibida a Venda Comercial.</h4><br>
 
 Pronto, o bot ja está instalado e as contas configuradas.<br>
 </h6>
-<i><h5>2- Contas<h5><i> 
+<i><h5>
+2- Contas
+<h5></i> 
 <h6>
 2.1 Para a execução do programa abra o CSGO em uma sala como "casual, servidor comunidade"<br>
 2.2 Já executado a parte 1.7 e 2.1, com sua conta em um servidor, digite "node index.js" é necessário no minimo 15 contas por operação<br>
