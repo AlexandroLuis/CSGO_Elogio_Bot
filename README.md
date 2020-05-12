@@ -19,7 +19,7 @@ Proibida a Venda Comercial.</h4><br>
 Pronto, o bot ja está instalado e as contas configuradas.<br>
 </h6>
 <i><h5>
-2- Contas
+2- Funcionamento.
 <h5></i> 
 <h6>
 2.1 Para a execução do programa abra o CSGO em uma sala como "casual, servidor comunidade"<br>
