@@ -49,17 +49,17 @@ let helper = null;
 			message: "What would you like to do?",
 			pageSize: 11,
 			choices: [
-				"Export account list",
-				"List commends for user",
-				"Reset commends for user",
-				"Remove account from database",
-				"Add account(s) to database",
-				"List not working accounts",
-				"Remove all not working accounts",
-				"Get last commend target and time",
-				"Set account operational",
-				"Reset Database",
-				"Exit"
+				"Exportar lista de contas",
+				"Mostrar elogios por usuario",
+				"Resetar elogios por usuario",
+				"Deletar contas da base de dados",
+				"Adicionar contas a base de dados",
+				"Mostrar contas não operacionais",
+				"Remover contas não operacionais",
+				"Mostrar ultimos elogios",
+				"Mostrar conta em uso",
+				"Resetar dase de dados",
+				"SAIR"
 			]
 		});
 
