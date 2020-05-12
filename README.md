@@ -1,7 +1,7 @@
-<h1>Bot de Elogios CS GO em javascript, Open source
+<h1>Bot de Elogios CS GO em javascript, Open source<br>
 
-É permitida a manipulação, distribuição, uso comercial e privado deste software.
-Proibida a Venda Comercial.</h1>
+É permitida a manipulação, distribuição, uso comercial e privado deste software.<br>
+Proibida a Venda Comercial.</h1><br>
 
 <h2>1- Instalação.<h2>
 1.1- Baixe o arquivo como .zip
