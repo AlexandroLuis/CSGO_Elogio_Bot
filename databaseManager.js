@@ -64,7 +64,7 @@ let helper = null;
 		});
 
 		switch (r.response) {
-			case "Set account operational": {
+			case "Mostrar conta em uso": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "username",
@@ -80,13 +80,13 @@ let helper = null;
 				break;
 			}
 
-			case "Get last commend target and time": {
+			case "Mostrar ultimos elogios": {
 				let lastCommend = await db.get("SELECT username,lastCommend FROM accounts ORDER BY lastCommend DESC LIMIT 1");
 				console.log("The latest commend has been sent by account " + lastCommend.username + " at " + new Date(lastCommend.lastCommend).toLocaleString());
 				break;
 			}
 
-			case "Remove all not working accounts": {
+			case "Remover contas não operacionais": {
 				let _export = await inquirer.prompt({
 					type: "list",
 					name: "response",
@@ -110,7 +110,7 @@ let helper = null;
 				break;
 			}
 
-			case "Reset Database": {
+			case "Resetar dase de dados": {
 				let confirm = await inquirer.prompt({
 					type: "confirm",
 					name: "confirm",
@@ -130,7 +130,7 @@ let helper = null;
 				break;
 			}
 
-			case "List not working accounts": {
+			case "Mostrar contas não operacionais": {
 				let data = await db.all("SELECT username FROM accounts WHERE operational = 0");
 
 				if (data.length <= 0) {
@@ -141,7 +141,7 @@ let helper = null;
 				break;
 			}
 
-			case "Add account(s) to database": {
+			case "Adicionar contas a base de dados": {
 				let selection = await inquirer.prompt({
 					type: "list",
 					name: "selection",
@@ -220,7 +220,7 @@ let helper = null;
 				break;
 			}
 
-			case "Remove account from database": {
+			case "Deletar contas da base de dados": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -236,7 +236,7 @@ let helper = null;
 				break;
 			}
 
-			case "Reset commends for user": {
+			case "Resetar elogios por usuario": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -254,7 +254,7 @@ let helper = null;
 				break;
 			}
 
-			case "List commends for user": {
+			case "Mostrar elogios por usuario": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -278,13 +278,13 @@ let helper = null;
 				break;
 			}
 
-			case "Exit": {
+			case "SAIR": {
 				console.log("Safely closing database...");
 				await db.close();
 				return;
 			}
 
-			case "Export account list": {
+			case "Exportar lista de contas": {
 				let _export = await inquirer.prompt({
 					type: "list",
 					name: "response",
