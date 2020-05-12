@@ -1,6 +1,6 @@
 {
 	"commend": {
-		"friendly": 5,
+		"friendly": 10,
 		"teaching": 10,
 		"leader": 15
 	},
@@ -12,9 +12,9 @@
 		"abusive": 10
 	},
 	"account": {
-		"username": "MajorTom845",
-		"password": "Alexandro1a",
-		"sharedSecret": ""
+		"username": "COLOQUE SEU USUARIO STEAM",
+		"password": "COLOQUE SUA SENHA STEAM",
+		"sharedSecret": "COLOQUE SEU CÓDIGO FAMILIA SE POSSUI UM"
 	},
 	"proxy": {
 		"enabled": false,
@@ -23,10 +23,10 @@
 	},
 	"type": "COMMEND",
 	"method": "SERVER",
-	"target": "https://steamcommunity.com/profiles/76561198967346425/",
+	"target": "COLOQUE O PERFIL EM QUE DESEJA ELOGIAR",
 	"perChunk": 20,
 	"betweenChunks": 300000,
 	"cooldown": 28800000,
-	"steamWebAPIKey": "E5326FA9B879561FE15508DA54F36D97",
+	"steamWebAPIKey": "https://steamcommunity.com/dev/apikey COLOQUE QUALQUER CHAVE DE DESENVOLVEDOR AQUI",
 	"disableUpdateCheck": true
 }
