@@ -1,4 +1,4 @@
-<i><h4>Bot de Elogios CS GO em javascript, Open source  FUNCIONANDO 100%<br>
+<i><h4>Bot de Elogios CS GO em javascript, Open source  NÃO ESTÁ FUNCIONANDO!!<br>
 
 É permitida a manipulação, distribuição, uso comercial e privado deste software.<br>
 Proibida a Venda Comercial.</h4><br>
