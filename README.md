@@ -1,4 +1,4 @@
-**Provavelmente não funciona mais, não irei atualizar, caso tenha uma nova versão faça um merge que aceito!** 
+<h2>**Provavelmente não funciona mais, não irei atualizar, caso tenha uma nova versão faça um merge que aceito!**</h2>
 <i><h4>Bot de Elogios CS GO em javascript, Open source.<br>
 
 É permitida a manipulação, distribuição, uso comercial e privado deste software.<br>
