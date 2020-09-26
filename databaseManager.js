@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const sqlite = require("sqlite");
+const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs");
 const Helper = require("./helpers/Helper.js");
@@ -13,7 +14,7 @@ let helper = null;
 	}
 
 	try {
-		config = require(path.resolve('config.json'));
+		config = require(path.resolve("config.json"));
 	} catch (err) {
 		let errPosition = err.message.split(": ").pop().trim();
 		let match = errPosition.match(/^Unexpected (?<type>.*) in JSON at position (?<position>.*)$/i);
@@ -33,7 +34,10 @@ let helper = null;
 	helper = new Helper(config.steamWebAPIKey);
 
 	console.log("Opening database...");
-	let db = await sqlite.open("./accounts.sqlite");
+	let db = await sqlite.open({
+		filename: "./accounts.sqlite",
+		driver: sqlite3.Database
+	});
 
 	await Promise.all([
 		db.run("CREATE TABLE IF NOT EXISTS \"accounts\" (\"username\" TEXT NOT NULL UNIQUE, \"password\" TEXT NOT NULL, \"sharedSecret\" TEXT, \"lastCommend\" INTEGER NOT NULL DEFAULT -1, \"operational\" NUMERIC NOT NULL DEFAULT 1, PRIMARY KEY(\"username\"))"),
@@ -49,22 +53,38 @@ let helper = null;
 			message: "What would you like to do?",
 			pageSize: 11,
 			choices: [
-				"Exportar lista de contas",
-				"Mostrar elogios por usuario",
-				"Resetar elogios por usuario",
-				"Deletar contas da base de dados",
-				"Adicionar contas a base de dados",
-				"Mostrar contas não operacionais",
-				"Remover contas não operacionais",
-				"Mostrar ultimos elogios",
-				"Mostrar conta em uso",
-				"Resetar dase de dados",
-				"SAIR"
+				"Export account list",
+				"List commends for user",
+				"Reset commends for user",
+				"Remove account from database",
+				"Add account(s) to database",
+				"List not working accounts",
+				"Remove all not working accounts",
+				"Get last commend target and time",
+				"Set account operational",
+				"Remove all accounts - No history reset",
+				"Reset Database",
+				"Exit"
 			]
 		});
 
 		switch (r.response) {
-			case "Mostrar conta em uso": {
+			case "Remove all accounts - No history reset": {
+				let confirm = await inquirer.prompt({
+					type: "confirm",
+					name: "confirm",
+					message: "Are you sure you want to remove ALL accounts from the database? Commend history will NOT be removed"
+				});
+
+				if (!confirm.confirm) {
+					break;
+				}
+
+				let data = await db.run("DELETE FROM accounts");
+				console.log("Successfully dropped " + data[0].changes + " account entries");
+				break;
+			}
+			case "Set account operational": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "username",
@@ -80,13 +100,13 @@ let helper = null;
 				break;
 			}
 
-			case "Mostrar ultimos elogios": {
+			case "Get last commend target and time": {
 				let lastCommend = await db.get("SELECT username,lastCommend FROM accounts ORDER BY lastCommend DESC LIMIT 1");
 				console.log("The latest commend has been sent by account " + lastCommend.username + " at " + new Date(lastCommend.lastCommend).toLocaleString());
 				break;
 			}
 
-			case "Remover contas não operacionais": {
+			case "Remove all not working accounts": {
 				let _export = await inquirer.prompt({
 					type: "list",
 					name: "response",
@@ -110,7 +130,7 @@ let helper = null;
 				break;
 			}
 
-			case "Resetar dase de dados": {
+			case "Reset Database": {
 				let confirm = await inquirer.prompt({
 					type: "confirm",
 					name: "confirm",
@@ -130,7 +150,7 @@ let helper = null;
 				break;
 			}
 
-			case "Mostrar contas não operacionais": {
+			case "List not working accounts": {
 				let data = await db.all("SELECT username FROM accounts WHERE operational = 0");
 
 				if (data.length <= 0) {
@@ -141,7 +161,7 @@ let helper = null;
 				break;
 			}
 
-			case "Adicionar contas a base de dados": {
+			case "Add account(s) to database": {
 				let selection = await inquirer.prompt({
 					type: "list",
 					name: "selection",
@@ -209,7 +229,7 @@ let helper = null;
 					break;
 				}
 
-				let chunks = new Helper().chunkArray(list, 100);
+				let chunks = helper.chunkArray(list, 100);
 				let changes = 0;
 				for (let chunk of chunks) {
 					let data = await db.run("INSERT OR IGNORE INTO accounts (\"username\", \"password\", \"sharedSecret\") VALUES " + chunk.map(s => "(?, ?, ?)").join(", "), ...chunk.map(s => [ s.username, s.password, s.sharedSecret ]).flat());
@@ -220,7 +240,7 @@ let helper = null;
 				break;
 			}
 
-			case "Deletar contas da base de dados": {
+			case "Remove account from database": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -236,7 +256,7 @@ let helper = null;
 				break;
 			}
 
-			case "Resetar elogios por usuario": {
+			case "Reset commends for user": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -254,7 +274,7 @@ let helper = null;
 				break;
 			}
 
-			case "Mostrar elogios por usuario": {
+			case "List commends for user": {
 				let input = await inquirer.prompt({
 					type: "input",
 					name: "input",
@@ -278,13 +298,13 @@ let helper = null;
 				break;
 			}
 
-			case "SAIR": {
+			case "Exit": {
 				console.log("Safely closing database...");
 				await db.close();
 				return;
 			}
 
-			case "Exportar lista de contas": {
+			case "Export account list": {
 				let _export = await inquirer.prompt({
 					type: "list",
 					name: "response",
