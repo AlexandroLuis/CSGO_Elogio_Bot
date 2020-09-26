@@ -10,12 +10,12 @@ const Helpers = require('./helpers.js');
  * @param {int} appid
  * @param {{classid: int, instanceid?: int}[]} classes
  * @param {function} [callback]
- * @return Promise
+ * @returns {Promise}
  */
 SteamUser.prototype.getAssetClassInfo = function(language, appid, classes, callback) {
-	return StdLib.Promises.callbackPromise(['descriptions'], callback, (accept, reject) => {
+	return StdLib.Promises.timeoutCallbackPromise(10000, ['descriptions'], callback, (resolve, reject) => {
 		this._sendUnified("Econ.GetAssetClassInfo#1", {language, appid, classes}, (body) => {
-			accept({"descriptions": body.descriptions});
+			resolve({"descriptions": body.descriptions});
 		});
 	});
 };
@@ -23,12 +23,12 @@ SteamUser.prototype.getAssetClassInfo = function(language, appid, classes, callb
 /**
  * Gets your account's trade URL.
  * @param {function} [callback]
- * @return Promise
+ * @returns {Promise}
  */
 SteamUser.prototype.getTradeURL = function(callback) {
-	return StdLib.Promises.callbackPromise(null, callback, (accept, reject) => {
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, (resolve, reject) => {
 		this._sendUnified("Econ.GetTradeOfferAccessToken#1", {}, (body) => {
-			accept({
+			resolve({
 				"token": body.trade_offer_access_token,
 				"url": "https://steamcommunity.com/tradeoffer/new/?partner=" + this.steamID.accountid + "&token=" + body.trade_offer_access_token
 			});
@@ -39,12 +39,12 @@ SteamUser.prototype.getTradeURL = function(callback) {
 /**
  * Makes a new trade URL for your account.
  * @param {function} [callback]
- * @return Promise
+ * @returns {Promise}
  */
 SteamUser.prototype.changeTradeURL = function(callback) {
-	return StdLib.Promises.callbackPromise(null, callback, (accept, reject) => {
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, (resolve, reject) => {
 		this._sendUnified("Econ.GetTradeOfferAccessToken#1", {"generate_new_token": true}, (body) => {
-			accept({
+			resolve({
 				"token": body.trade_offer_access_token,
 				"url": "https://steamcommunity.com/tradeoffer/new/?partner=" + this.steamID.accountid + "&token=" + body.trade_offer_access_token
 			});
@@ -58,7 +58,7 @@ SteamUser.prototype.changeTradeURL = function(callback) {
  * @returns {Promise}
  */
 SteamUser.prototype.getEmoticonList = function(callback) {
-	return StdLib.Promises.callbackPromise(null, callback, (resolve, reject) => {
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, (resolve, reject) => {
 		this._sendUnified("Player.GetEmoticonList#1", {}, (body, hdr) => {
 			let err = Helpers.eresultError(hdr.proto);
 			if (err) {
@@ -82,3 +82,102 @@ SteamUser.prototype.getEmoticonList = function(callback) {
 		});
 	});
 };
+
+/**
+ * Get a listing of profile items you own.
+ * @param {{language?: string}} [options]
+ * @param {function} [callback]
+ * @returns {Promise}
+ */
+SteamUser.prototype.getOwnedProfileItems = function(options, callback) {
+	if (typeof options == 'function') {
+		callback = options;
+		options = {};
+	}
+
+	options = options || {};
+
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, false, (resolve, reject) => {
+		this._sendUnified('Player.GetProfileItemsOwned#1', {language: options.language || 'english'}, (body, hdr) => {
+			let err = Helpers.eresultError(hdr.proto);
+			if (err) {
+				return reject(err);
+			}
+
+			for (let i in body) {
+				if (Array.isArray(body[i])) {
+					body[i] = body[i].map(processProfileItem);
+				}
+			}
+
+			resolve(body);
+		});
+	});
+};
+
+/**
+ * Get a user's equipped profile items.
+ * @param {SteamID|string} steamID - Either a SteamID object or a string that can parse into one
+ * @param {{language?: string}} [options]
+ * @param {function} [callback]
+ * @returns {Promise}
+ */
+SteamUser.prototype.getEquippedProfileItems = function(steamID, options, callback) {
+	if (typeof options == 'function') {
+		callback = options;
+		options = {};
+	}
+
+	options = options || {};
+
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, false, (resolve, reject) => {
+		steamID = Helpers.steamID(steamID);
+
+		this._sendUnified('Player.GetProfileItemsEquipped#1', {
+			steamid: steamID.toString(),
+			language: options.language || 'english'
+		}, (body, hdr) => {
+			let err = Helpers.eresultError(hdr.proto);
+			if (err) {
+				return reject(err);
+			}
+
+			for (let i in body) {
+				body[i] = processProfileItem(body[i]);
+			}
+
+			resolve(body);
+		});
+	});
+};
+
+/**
+ * Change your current profile background.
+ * @param {number|string} backgroundAssetID
+ * @param {function} [callback]
+ */
+SteamUser.prototype.setProfileBackground = function(backgroundAssetID, callback) {
+	return StdLib.Promises.timeoutCallbackPromise(10000, null, callback, true, (resolve, reject) => {
+		this._sendUnified('Player.SetProfileBackground#1', {communityitemid: backgroundAssetID}, (body, hdr) => {
+			let err = Helpers.eresultError(hdr.proto);
+			if (err) {
+				return reject(err);
+			}
+
+			resolve();
+		});
+	});
+};
+
+function processProfileItem(item) {
+	if (!Object.keys(item).some(k => item[k] !== null)) {
+		return null;
+	}
+
+	['image_large', 'image_small', 'movie_webm', 'movie_mp4'].forEach((key) => {
+		if (item[key]) {
+			item[key] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/' + item[key];
+		}
+	});
+	return item;
+}

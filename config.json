@@ -5,24 +5,24 @@
 		"leader": 15
 	},
 	"report": {
-		"aimbot": 0,
-		"wallhack": 0,
-		"speedhack": 0,
-		"teamharm": 0,
-		"abusive": 0
-	},
-	"account": {
-		"username": "SEU NOME AQUI",
-		"password": "SUA SENHA",
-		"sharedSecret": "PIN FAMILIA"
+		"aimbot": 10,
+		"wallhack": 10,
+		"speedhack": 10,
+		"teamharm": 10,
+		"abusive": 10
 	},
 	"fetcher": {
-		"username": "SUA CONTA",
-		"password": "SUA SENHA",
+		"username": "COLOQUE SEU USUARIO STEAM",
+		"password": "COLOQUE SUA SENHA STEAM",
 		"sharedSecret": "",
 		"maxTries": 10,
 		"tryDelay": 2500,
 		"askSteamGuard": true
+	},
+	"account": {
+		"username": "COLOQUE SEU USUARIO STEAM",
+		"password": "COLOQUE SUA SENHA STEAM",
+		"sharedSecret": "COLOQUE SEU CÓDIGO FAMILIA SE POSSUI UM"
 	},
 	"proxy": {
 		"enabled": false,
@@ -31,17 +31,10 @@
 	},
 	"type": "COMMEND",
 	"method": "SERVER",
-	"target": "COLOQUE O ID DA STEAM URL DA CONTA A RECEBER OS ELOGIOS",
-	"serverID": "auto",
-	"matchID": "0",
+	"target": "COLOQUE O PERFIL EM QUE DESEJA ELOGIAR",
 	"perChunk": 20,
 	"betweenChunks": 300000,
 	"cooldown": 28800000,
-	"showCommends": false,
-	"autoReportOnMatchEnd": false,
-	"switchServerAfterChunks": 5,
-	"protocol": "Auto",
-	"steamWebAPIKey": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-	"disableUpdateCheck": false
+	"steamWebAPIKey": "https://steamcommunity.com/dev/apikey COLOQUE QUALQUER CHAVE DE DESENVOLVEDOR AQUI",
+	"disableUpdateCheck": true
 }
-

@@ -67,6 +67,7 @@ enum EMsg {
 	k_EMsgUpdateScheduledTaskEnableState_TEST = 244;
 	k_EMsgUpdateScheduledTaskEnableStateResponse_TEST = 245;
 	k_EMsgContentDescriptionDeltaUpdate = 246;
+	k_EMsgGMShellAndServerAddressUpdates = 247;
 	k_EMsgBaseGM = 300;
 	k_EMsgHeartbeat = 300;
 	k_EMsgShellFailed = 301;
@@ -93,6 +94,7 @@ enum EMsg {
 	k_EMsgGMTestNextBuildSchemaConversionResponse = 335;
 	k_EMsgExpectShellRestart = 336;
 	k_EMsgHotFixProgress = 337;
+	k_EMsgGMStatsForwardToAdminConnections = 338;
 	k_EMsgBaseAIS = 400;
 	k_EMsgAISRequestContentDescription = 402;
 	k_EMsgAISUpdateAppInfo = 403;
@@ -548,6 +550,8 @@ enum EMsg {
 	k_EMsgGCHAccountPhoneNumberChange = 2236;
 	k_EMsgGCHAccountTwoFactorChange = 2237;
 	k_EMsgGCHInviteUserToLobby = 2238;
+	k_EMsgGCHUpdateMultipleSessions = 2239;
+	k_EMsgGCHMarkAppSessionsAuthoritative = 2240;
 	k_EMsgBaseP2P = 2500;
 	k_EMsgP2PIntroducerMessage = 2502;
 	k_EMsgBaseSM = 2900;
@@ -1028,7 +1032,6 @@ enum EMsg {
 	k_EMsgClientMicroTxnAuthRequest = 5504;
 	k_EMsgClientMicroTxnAuthorize = 5505;
 	k_EMsgClientMicroTxnAuthorizeResponse = 5506;
-	k_EMsgClientAppMinutesPlayedData = 5507;
 	k_EMsgClientGetMicroTxnInfo = 5508;
 	k_EMsgClientGetMicroTxnInfoResponse = 5509;
 	k_EMsgClientMarketingMessageUpdate2 = 5510;

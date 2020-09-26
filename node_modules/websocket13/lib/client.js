@@ -85,6 +85,8 @@ function WebSocket(uri, options) {
 		this.headers.cookie = Object.keys(this.options.cookies).map(name => name.trim() + '=' + encodeURIComponent(this.options.cookies[name])).join('; ');
 	}
 
+	this._type = 'client';
+
 	this._connect();
 }
 

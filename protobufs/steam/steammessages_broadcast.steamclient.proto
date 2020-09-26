@@ -34,6 +34,7 @@ message CBroadcast_BeginBroadcastSession_Request {
 	optional bool thumbnail_upload = 7;
 	optional string client_beta = 8;
 	optional uint32 sysid = 9;
+	optional bool allow_webrtc = 10;
 }
 
 message CBroadcast_BeginBroadcastSession_Response {
@@ -120,6 +121,7 @@ message CBroadcast_WatchBroadcast_Response {
 	optional string webrtc_turn_server = 17;
 	optional bool is_replay = 18;
 	optional int32 duration = 19;
+	optional string cdn_auth_url_parameters = 20;
 }
 
 message CBroadcast_HeartbeatBroadcast_Notification {

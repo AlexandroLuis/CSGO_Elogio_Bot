@@ -1,4 +1,5 @@
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
+import { isTagNode } from '@bbob/plugin-helper';
 import { createLexer } from './lexer';
 import { createList } from './utils';
 
@@ -57,7 +58,24 @@ const parse = (input, opts = {}) => {
     return nestedTagsMap[token.getValue()];
   };
 
-  const isTagNested = tagName => !!nestedTagsMap[tagName];
+  /**
+   * @param tagName
+   * @returns {boolean}
+   */
+  const isTagNested = (tagName) => !!nestedTagsMap[tagName];
+
+  /**
+   * @private
+   * @param {String} value
+   * @return {boolean}
+   */
+  const isAllowedTag = (value) => {
+    if (options.onlyAllowTags && options.onlyAllowTags.length) {
+      return options.onlyAllowTags.indexOf(value) >= 0;
+    }
+
+    return true;
+  };
 
   /**
    * Flushes temp tag nodes and its attributes buffers
@@ -77,28 +95,31 @@ const parse = (input, opts = {}) => {
   const getNodes = () => {
     const lastNestedNode = nestedNodes.getLast();
 
-    return lastNestedNode ? lastNestedNode.content : nodes.toArray();
-  };
-
-  /**
-   * @private
-   * @param {TagNode} tag
-   */
-  const appendNodes = (tag) => {
-    getNodes().push(tag);
-  };
-
-  /**
-   * @private
-   * @param {String} value
-   * @return {boolean}
-   */
-  const isAllowedTag = (value) => {
-    if (options.onlyAllowTags && options.onlyAllowTags.length) {
-      return options.onlyAllowTags.indexOf(value) >= 0;
+    if (lastNestedNode && Array.isArray(lastNestedNode.content)) {
+      return lastNestedNode.content;
     }
 
-    return true;
+    return nodes.toArray();
+  };
+
+  /**
+   * @private
+   * @param {string|TagNode} node
+   */
+  const appendNodes = (node) => {
+    const items = getNodes();
+
+    if (Array.isArray(items)) {
+      if (isTagNode(node)) {
+        if (isAllowedTag(node.tag)) {
+          items.push(node.toTagNode());
+        } else {
+          items.push(node.toString());
+        }
+      } else {
+        items.push(node);
+      }
+    }
   };
 
   /**
@@ -116,7 +137,7 @@ const parse = (input, opts = {}) => {
     if (isNested) {
       nestedNodes.push(tagNode);
     } else {
-      appendNodes(tagNode);
+      appendNodes(tagNode, token);
     }
   };
 
@@ -130,8 +151,8 @@ const parse = (input, opts = {}) => {
     const lastNestedNode = nestedNodes.flushLast();
 
     if (lastNestedNode) {
-      appendNodes(lastNestedNode);
-    } else if (options.onError) {
+      appendNodes(lastNestedNode, token);
+    } else if (typeof options.onError === 'function') {
       const tag = token.getValue();
       const line = token.getLine();
       const column = token.getColumn();
@@ -209,7 +230,7 @@ const parse = (input, opts = {}) => {
    * @param {Token} token
    */
   const onToken = (token) => {
-    if (token.isTag() && isAllowedTag(token.getName())) {
+    if (token.isTag()) {
       handleTag(token);
     } else {
       handleNode(token);
