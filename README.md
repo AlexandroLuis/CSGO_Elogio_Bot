@@ -13,7 +13,7 @@ Proibida a Venda Comercial.</h4><br>
 1.4- com o arquivo já configurado é preciso importar as contas para a base de dados. Caso já possua contas pule para a etapa "1.6"<br>
 1.5 Caso não possua contas, pode criar <a href="https://accgen.cathook.club">clicando aqui</a> e importar elas no modo user:senha e salve o aquivo como contas.txt <br>
 1.6 Baixe o programa <a href="https://nodejs.org/en/download">"node js"</a> e instale<br>
-1.7 Para conseguir rodar o script abra o local do arquivo e apra o prompt de comando do mesmo, (barra de pesquisa e digita "cmd")<br>
+1.7 Para conseguir rodar o script abra o local do arquivo e abra o prompt de comando do mesmo, (barra de pesquisa e digita "cmd")<br>
 1.8 No CMD digite node "node databaseManager.js" e a opção de importar as contas, escolha importar por usuario:senha e coloque o nome do arquivo<br>
 
 Pronto, o bot ja está instalado e as contas configuradas.<br>
