@@ -4,3 +4,6 @@ PELA SINTAXE:
 
 nome:senha
 nome2:senha2
+
+Pode usar este site para criar contas automaticamente:
+https://accgen.cathook.club/
