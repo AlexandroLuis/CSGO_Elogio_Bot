@@ -11,6 +11,14 @@
 		"teamharm": 10,
 		"abusive": 10
 	},
+	"fetcher": {
+		"username": "COLOQUE SEU USUARIO STEAM",
+		"password": "COLOQUE SUA SENHA STEAM",
+		"sharedSecret": "",
+		"maxTries": 10,
+		"tryDelay": 2500,
+		"askSteamGuard": true
+	},
 	"account": {
 		"username": "COLOQUE SEU USUARIO STEAM",
 		"password": "COLOQUE SUA SENHA STEAM",
