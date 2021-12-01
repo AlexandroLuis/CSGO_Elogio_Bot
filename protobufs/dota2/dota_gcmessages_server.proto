@@ -1,9 +1,11 @@
 import "steammessages.proto";
+import "valveextensions.proto";
 import "dota_shared_enums.proto";
 import "dota_gcmessages_common.proto";
 import "econ_gcmessages.proto";
 import "network_connection.proto";
 import "dota_gcmessages_common_match_management.proto";
+import "gcsdk_gcmessages.proto";
 
 option optimize_for = SPEED;
 option cc_generic_services = false;
@@ -13,53 +15,6 @@ enum EPoorNetworkConditionsType {
 	k_EPoorNetworkConditions_Unknown = 1;
 	k_EPoorNetworkConditions_MassDisconnect = 2;
 	k_EPoorNetworkConditions_ExcessBadQosIntervals = 3;
-}
-
-enum EAbilityAbuseType {
-	k_EAbilityAbuseType_None = 0;
-	k_EAbilityAbuseType_Io_Relocate = 1;
-	k_EAbilityAbuseType_Chen_Test_Of_Faith = 2;
-	k_EAbilityAbuseType_Bane_Nightmare = 3;
-	k_EAbilityAbuseType_Bloodseeker_Bloodrage = 4;
-	k_EAbilityAbuseType_Outworld_Astral_Imprisonment = 5;
-	k_EAbilityAbuseType_Shadow_Demon_Disruption = 6;
-	k_EAbilityAbuseType_Grimstroke_InkSwell = 7;
-}
-
-enum EIntentionalFeedingType {
-	k_EIntentionalFeedingType_None = 0;
-	k_EIntentionalFeedingType_ExcessiveDeaths = 1;
-	k_EIntentionalFeedingType_MultipleCourierPurchases = 2;
-	k_EIntentionalFeedingType_MultipleCourierDeaths = 4;
-	k_EIntentionalFeedingType_LowActivity = 8;
-	k_EIntentionalFeedingType_LowDamage = 16;
-	k_EIntentionalFeedingType_HighUnspentGold = 32;
-	k_EIntentionalFeedingType_SoldTooMuchItemValue = 64;
-	k_EIntentionalFeedingType_TooManyDroppedItems = 128;
-	k_EIntentionalFeedingType_ExcessiveTowerDamage = 256;
-	k_EIntentionalFeedingType_LastHitsDenies = 512;
-	k_EIntentionalFeedingType_XPPM = 1024;
-	k_EIntentionalFeedingType_SuspiciousOrders = 2048;
-}
-
-enum ESuspiciousActivity {
-	k_ESuspiciousActivity_VAC_MultipleInstances = 1;
-	k_ESuspiciousActivity_IntentionalFeeding = 100;
-	k_ESuspiciousActivity_SuspectedBotFarming = 101;
-	k_ESuspiciousActivity_AttemptedToCrashServer = 102;
-}
-
-enum ESuspiciousBuildType {
-	k_ESuspiciousBuildType_None = 0;
-	k_ESuspiciousBuildType_NoGoldSpent = 1;
-	k_ESuspiciousBuildType_NoItems = 2;
-	k_ESuspiciousBuildType_NoSignificantItems = 3;
-	k_ESuspiciousBuildType_TooManyBoots = 4;
-	k_ESuspiciousBuildType_Bot1 = 101;
-	k_ESuspiciousBuildType_Bot2 = 102;
-	k_ESuspiciousBuildType_Bot3 = 103;
-	k_ESuspiciousBuildType_Bot4 = 104;
-	k_ESuspiciousBuildType_Bot5 = 105;
 }
 
 message CMsgPoorNetworkConditions {
@@ -238,18 +193,6 @@ message CMsgSignOutGameplayStats {
 	repeated .CMsgSignOutGameplayStats.CTeam teams = 1;
 }
 
-message CMsgSignOutReportActivityMarkers {
-	message Marker {
-		optional uint32 game_time_s = 1;
-		optional uint32 target_account_id = 2;
-		optional uint32 reporter_account_id = 3;
-		optional .EDOTAReportMarkerType marker_type = 4 [default = k_EDOTAReportMarkerType_Unknown];
-		optional string comment = 5;
-	}
-
-	repeated .CMsgSignOutReportActivityMarkers.Marker markers = 1;
-}
-
 message CMsgGameMatchSignOut {
 	message CTeam {
 		message CPlayer {
@@ -273,6 +216,7 @@ message CMsgGameMatchSignOut {
 			optional fixed64 steam_id = 1;
 			optional uint32 hero_id = 3;
 			repeated uint32 items = 4;
+			repeated uint32 item_purchase_times = 63;
 			optional uint32 gold = 5;
 			optional uint32 kills = 6;
 			optional uint32 deaths = 7;
@@ -311,6 +255,7 @@ message CMsgGameMatchSignOut {
 			optional uint32 lane = 45;
 			optional bool is_using_plus_guide = 47;
 			repeated .CMsgGameMatchSignOut.CTeam.CPlayer.HeroDamageReceived hero_damage_received = 48;
+			repeated .CMsgGameMatchSignOut.CTeam.CPlayer.HeroDamageReceived hero_damage_dealt = 64;
 			optional uint32 seconds_dead = 51;
 			optional uint32 gold_lost_to_death = 52;
 			optional uint32 command_count = 53;
@@ -322,6 +267,7 @@ message CMsgGameMatchSignOut {
 			optional uint32 dewards = 59;
 			optional uint32 wards_placed = 60;
 			optional uint32 camps_stacked = 61;
+			optional uint32 player_slot = 62;
 		}
 
 		repeated .CMsgGameMatchSignOut.CTeam.CPlayer players = 1;
@@ -506,6 +452,9 @@ message CMsgGameMatchSignoutResponse {
 	optional .CMsgDOTAMatch match_details = 8;
 	repeated .CMsgGameMatchSignoutResponse.PlayerMetadata players_metadata = 9;
 	optional .CMvpData mvp_data = 10;
+	optional fixed64 ow_private_key = 11;
+	optional fixed32 ow_salt = 12;
+	optional uint64 ow_replay_id = 13;
 }
 
 message CMsgTimedRewardContainer {
@@ -531,6 +480,36 @@ message CMsgGameMatchSignOutEventGameData {
 	optional string map_name = 3;
 	optional bytes event_game_data = 4;
 	optional uint32 start_time = 5;
+}
+
+message CMsgGameMatchSignOutPerfData {
+	repeated float average_frame_time = 1;
+	repeated float max_frame_time = 2;
+	optional float server_average_frame_time = 3;
+	optional float server_max_frame_time = 4;
+	repeated float average_compute_time = 5;
+	repeated float max_compute_time = 6;
+	repeated float average_client_tick_time = 7;
+	repeated float max_client_tick_time = 8;
+	repeated float average_client_simulate_time = 9;
+	repeated float max_client_simulate_time = 10;
+	repeated float average_output_time = 11;
+	repeated float max_output_time = 12;
+	repeated float average_wait_for_rendering_to_complete_time = 13;
+	repeated float max_wait_for_rendering_to_complete_time = 14;
+	repeated float average_swap_time = 15;
+	repeated float max_swap_time = 16;
+	repeated float average_frame_update_time = 17;
+	repeated float max_frame_update_time = 18;
+	repeated float average_idle_time = 19;
+	repeated float max_idle_time = 20;
+	repeated float average_input_processing_time = 21;
+	repeated float max_input_processing_time = 22;
+}
+
+message CMsgGameMatchSignOutBanData {
+	repeated uint32 hero_bans = 1;
+	repeated uint32 hero_ban_votes = 2;
 }
 
 message CMsgDOTALiveScoreboardUpdate {
@@ -596,28 +575,12 @@ message CMsgDOTALiveScoreboardUpdate {
 	optional uint64 match_id = 9;
 }
 
-message CMsgDOTARequestPlayerResources {
-	optional fixed64 steam_id = 1;
-	optional uint32 player_id = 2;
-}
-
-message CMsgDOTARequestPlayerResourcesResponse {
-	optional fixed64 steam_id = 1;
-	optional uint32 rank = 2;
-	optional uint32 player_id = 3;
-	optional bool prevent_text_chat = 4;
-	optional bool prevent_voice_chat = 5;
-	optional bool low_priority = 6;
-	optional bool is_new_player = 8;
-	optional bool is_guide_player = 9;
-}
-
-message CMsgDOTARequestBatchPlayerResources {
+message CMsgServerToGCRequestBatchPlayerResources {
 	repeated uint32 account_ids = 1 [packed = true];
 	repeated uint32 rank_types = 4 [packed = true];
 }
 
-message CMsgDOTARequestBatchPlayerResourcesResponse {
+message CMsgServerToGCRequestBatchPlayerResourcesResponse {
 	message Result {
 		optional uint32 account_id = 1;
 		optional bool prevent_text_chat = 2;
@@ -629,7 +592,7 @@ message CMsgDOTARequestBatchPlayerResourcesResponse {
 		optional bool is_guide_player = 8;
 	}
 
-	repeated .CMsgDOTARequestBatchPlayerResourcesResponse.Result results = 6;
+	repeated .CMsgServerToGCRequestBatchPlayerResourcesResponse.Result results = 6;
 }
 
 message CMsgDOTAPlayerFailedToConnect {
@@ -864,10 +827,6 @@ message CSerializedCombatLog {
 	repeated .CMsgDOTACombatLogEntry entries = 3;
 }
 
-message CMsgServerToGCGetAdditionalEquips {
-	repeated uint32 account_ids = 1;
-}
-
 message CMsgServerToGCGetAdditionalEquipsResponse {
 	message CUserEquips {
 		optional uint32 account_id = 1;
@@ -893,14 +852,6 @@ message CMsgServerToGCVictoryPredictions {
 	}
 
 	repeated .CMsgServerToGCVictoryPredictions.Record records = 1;
-}
-
-message CMsgSuspiciousActivity {
-	optional uint32 account_id = 1;
-	optional .ESuspiciousActivity activity = 2 [default = k_ESuspiciousActivity_VAC_MultipleInstances];
-	optional sint32 intdata1 = 3;
-	optional sint32 intdata2 = 4;
-	optional uint32 time = 5;
 }
 
 message CMsgServerToGCRequestStatus {
@@ -1074,6 +1025,7 @@ message CMsgServerToGCPostMatchTipResponse {
 message CMsgServerToGCCloseCompendiumInGamePredictionVoting {
 	optional uint64 match_id = 1;
 	optional uint32 hltv_delay = 2;
+	optional uint32 league_id = 3;
 }
 
 message CMsgServerToGCCloseCompendiumInGamePredictionVotingResponse {
@@ -1091,6 +1043,16 @@ message CMsgServerToGCCompendiumInGamePredictionResults {
 	repeated .CMsgServerToGCCompendiumInGamePredictionResults.PredictionResult results = 2;
 	optional uint32 league_id = 3;
 	optional uint32 league_node_id = 4;
+}
+
+message CMsgServerToGCCompendiumChosenInGamePredictions {
+	message Prediction {
+		optional uint32 prediction_id = 1;
+	}
+
+	optional uint64 match_id = 1;
+	repeated .CMsgServerToGCCompendiumChosenInGamePredictions.Prediction predictions_chosen = 2;
+	optional uint32 league_id = 3;
 }
 
 message CMsgServerToGCCompendiumInGamePredictionResultsResponse {
@@ -1118,11 +1080,34 @@ message CMsgServerToGCMatchPlayerItemPurchaseHistory {
 		repeated uint32 allied_hero_ids = 4;
 		repeated uint32 enemy_hero_ids = 5;
 		repeated .CMsgServerToGCMatchPlayerItemPurchaseHistory.ItemPurchase item_purchases = 6;
+		optional uint32 lane = 7;
+		optional bool is_winner = 8;
 	}
 
 	optional uint64 match_id = 1;
 	optional uint32 mmr = 2;
 	repeated .CMsgServerToGCMatchPlayerItemPurchaseHistory.Player players = 3;
+}
+
+message CMsgServerToGCMatchPlayerNeutralItemEquipHistory {
+	message ItemEquip {
+		optional uint32 item = 1;
+		optional uint32 game_time = 2;
+		repeated uint32 inventory_items = 3;
+		repeated bool talents_skilled = 4;
+		repeated uint32 available_neutral_items = 5;
+	}
+
+	message Player {
+		optional uint32 account_id = 1;
+		repeated uint32 allied_hero_ids = 2;
+		repeated uint32 enemy_hero_ids = 3;
+		repeated .CMsgServerToGCMatchPlayerNeutralItemEquipHistory.ItemEquip item_equips = 4;
+		optional bool is_winner = 5;
+	}
+
+	optional uint64 match_id = 1;
+	repeated .CMsgServerToGCMatchPlayerNeutralItemEquipHistory.Player players = 2;
 }
 
 message CMsgServerToGCMatchStateHistory {
@@ -1140,9 +1125,9 @@ message CMsgServerToGCMatchStateHistory {
 
 	message TeamState {
 		optional uint32 team = 1;
-		repeated .CMsgServerToGCMatchStateHistory.PlayerState player_states = 2;
-		repeated uint32 tower_health_pct = 3;
-		repeated uint32 barracks_health_pct = 4;
+		repeated .CMsgServerToGCMatchStateHistory.PlayerState player_states = 2 [(steamml_max_entries) = 5];
+		repeated uint32 tower_health_pct = 3 [(steamml_max_entries) = 11];
+		repeated uint32 barracks_health_pct = 4 [(steamml_max_entries) = 3];
 		optional uint32 ancient_health_pct = 5;
 		optional uint32 glyph_cooldown = 6;
 		optional uint32 kills = 7;
@@ -1163,12 +1148,80 @@ message CMsgServerToGCMatchStateHistory {
 	repeated .CMsgServerToGCMatchStateHistory.MatchState match_states = 4;
 }
 
+message CMsgMatchStateSteamMLEntry {
+	optional .CMsgServerToGCMatchStateHistory.MatchState match_state = 1;
+	optional uint32 mmr = 2;
+	optional bool radiant_won = 3;
+}
+
+message CMsgLaneSelectionSteamMLEntry {
+	repeated uint32 hero_ids = 1 [(steamml_max_entries) = 10];
+	repeated uint32 lanes = 2 [(steamml_max_entries) = 6];
+}
+
+message CMsgAbilitySelectionSteamMLEntry {
+	optional uint32 mmr = 1;
+	optional uint32 hero_id = 2;
+	repeated uint32 enemy_hero_ids = 3 [(steamml_max_entries) = 4];
+	optional uint32 lane = 4;
+	repeated uint32 abilities = 5 [(steamml_max_entries) = 25];
+	optional uint32 selected_ability = 6;
+}
+
+message CMsgItemPurchasePregameSteamMLEntry {
+	optional uint32 mmr = 1;
+	optional uint32 lane = 2;
+	optional float balance = 3;
+	optional uint32 hero_id = 4;
+	repeated uint32 allied_hero_ids = 5 [(steamml_max_entries) = 4];
+	repeated uint32 enemy_hero_ids = 6 [(steamml_max_entries) = 5];
+	repeated uint32 items = 7 [(steamml_max_entries) = 9];
+}
+
+message CMsgItemPurchaseSteamMLEntry {
+	optional uint32 mmr = 1;
+	optional uint32 lane = 2;
+	optional uint32 hero_id = 3;
+	repeated uint32 allied_hero_ids = 4 [(steamml_max_entries) = 4];
+	repeated uint32 enemy_hero_ids = 5 [(steamml_max_entries) = 5];
+	repeated uint32 items = 6 [(steamml_max_entries) = 20];
+	repeated uint32 items_to_be_purchased = 7 [(steamml_max_entries) = 20];
+}
+
+message CMsgItemPurchaseSequenceSteamMLEntry {
+	optional uint32 mmr = 1;
+	optional uint32 lane = 2;
+	optional uint32 hero_id = 3;
+	repeated uint32 allied_hero_ids = 4 [(steamml_max_entries) = 4];
+	repeated uint32 enemy_hero_ids = 5 [(steamml_max_entries) = 5];
+	repeated uint32 items = 6 [(steamml_max_entries) = 20];
+	optional uint32 item_to_be_purchased = 7;
+}
+
 message CMsgServerToGCCavernCrawlIsHeroActive {
 	optional uint32 event_id = 1;
 	optional uint32 account_id = 2;
 	optional uint32 map_variant = 3;
 	optional uint32 hero_id = 4;
 	optional bool turbo_mode = 5;
+}
+
+message CMsgServerToGCPlayerChallengeHistory {
+	message PlayerChallenge {
+		optional uint32 account_id = 1;
+		optional .EPlayerChallengeHistoryType challenge_type = 2 [default = k_EPlayerChallengeHistoryType_Invalid];
+		optional uint32 challenge_id1 = 3;
+		optional uint32 challenge_id2 = 4;
+		optional uint32 progress_value_start = 5;
+		optional uint32 progress_value_end = 6;
+		optional bool team_won = 7;
+		optional uint64 audit_data = 8;
+		optional uint32 hero_id = 9;
+	}
+
+	optional uint64 match_id = 1;
+	optional uint32 average_rank = 2;
+	repeated .CMsgServerToGCPlayerChallengeHistory.PlayerChallenge challenge_records = 3;
 }
 
 message CMsgServerToGCCavernCrawlIsHeroActiveResponse {
@@ -1368,13 +1421,6 @@ message CMsgGCToServerRecordTrainingData {
 	optional bool enable = 1;
 }
 
-message CMsgServerToGCRefreshGuildContract {
-	optional bool enable = 1;
-}
-
-message CMsgServerToGCRefreshGuildContractResponse {
-}
-
 message CMsgServerToGCGetGuildContracts {
 	repeated uint32 account_ids = 1;
 }
@@ -1399,11 +1445,89 @@ message CMsgServerToGCGetGuildContractsResponse {
 }
 
 message CMsgMatchDiretideCandy {
+	message CandyDetails {
+		optional uint32 amount = 1;
+		optional uint32 audit = 2;
+	}
+
 	message PlayerCandy {
 		optional uint32 account_id = 1;
 		optional uint32 candy_amount = 3;
+		optional bool consumes_periodic_resource = 4;
+		repeated .CMsgMatchDiretideCandy.CandyDetails candy_breakdown = 5;
 	}
 
 	repeated .CMsgMatchDiretideCandy.PlayerCandy player_candy_data = 1;
 	optional .EEvent event_id = 2 [default = EVENT_ID_NONE];
+}
+
+message CMsgGCToServerCheerData {
+	message CheerTypeCount {
+		optional uint32 cheer_type = 1;
+		optional uint32 cheer_count = 2;
+	}
+
+	repeated .CMsgGCToServerCheerData.CheerTypeCount cheer_types = 1;
+	optional uint32 radiant_cheers = 2;
+	optional uint32 dire_cheers = 3;
+	optional uint32 radiant_premium_cheers = 4;
+	optional uint32 dire_premium_cheers = 5;
+}
+
+message CMsgCheerConfig {
+	optional bool cheers_enabled = 1;
+	optional bool is_valid_league_id = 2;
+	optional float window_duration = 3;
+	optional uint32 window_bucket_count = 4;
+	optional float crowd_level_push_time = 6;
+	optional uint32 crowd_level_low = 10;
+	optional uint32 crowd_level_medium = 11;
+	optional uint32 crowd_level_high = 12;
+	optional float cheer_scale_start = 13;
+	optional float cheer_scale_speed = 14;
+	optional uint32 cheer_scale_push_mark = 15;
+	optional uint32 cheer_scale_pull_mark = 16;
+	optional float cheer_scale_pct_of_max_cps_clamp = 17;
+	optional float cheer_scale_dampener_value = 21;
+	optional uint32 cheer_scale_dampener_lerp_time = 22;
+	optional float cheer_factor_bronze = 18;
+	optional float cheer_factor_silver = 19;
+	optional float cheer_factor_gold = 20;
+}
+
+message CMsgGCToServerCheerConfig {
+	optional .CMsgCheerConfig cheer_config = 1;
+}
+
+message CMsgServerToGCGetCheerConfig {
+	optional uint32 league_id = 1;
+}
+
+message CMsgServerToGCGetCheerConfigResponse {
+	optional .CMsgCheerConfig cheer_config = 2;
+}
+
+message CMsgGCToServerCheerScalesOverride {
+	repeated float scales = 1;
+}
+
+message CMsgGCToServerGetCheerState {
+}
+
+message CMsgCheerTypeState {
+	repeated uint32 cheer_counts = 1;
+	optional float max_per_second = 2;
+	optional float cheer_scale = 3;
+	optional float override_scale = 4;
+}
+
+message CMsgCheerState {
+	repeated .CMsgCheerTypeState cheer_types = 1;
+	optional uint32 radiant_crowd_level = 2;
+	optional uint32 dire_crowd_level = 3;
+}
+
+message CMsgServerToGCReportCheerState {
+	optional .CMsgCheerConfig cheer_config = 1;
+	optional .CMsgCheerState cheer_state = 2;
 }

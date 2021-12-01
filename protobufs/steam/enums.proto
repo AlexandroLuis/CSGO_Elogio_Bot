@@ -25,6 +25,8 @@ enum EPublishedFileQueryType {
 	k_PublishedFileQueryType_RankedByPlaytimeSessionsTrend = 17;
 	k_PublishedFileQueryType_RankedByLifetimePlaytimeSessions = 18;
 	k_PublishedFileQueryType_RankedByInappropriateContentRating = 19;
+	k_PublishedFileQueryType_RankedByBanContentCheck = 20;
+	k_PublishedFileQueryType_RankedByLastUpdatedDate = 21;
 }
 
 enum EPublishedFileInappropriateProvider {
@@ -71,4 +73,74 @@ enum EBanContentCheckResult {
 	k_EBanContentCheckResult_Possible = 50;
 	k_EBanContentCheckResult_Likely = 75;
 	k_EBanContentCheckResult_VeryLikely = 100;
+}
+
+enum EProfileCustomizationType {
+	k_EProfileCustomizationTypeInvalid = 0;
+	k_EProfileCustomizationTypeRareAchievementShowcase = 1;
+	k_EProfileCustomizationTypeGameCollector = 2;
+	k_EProfileCustomizationTypeItemShowcase = 3;
+	k_EProfileCustomizationTypeTradeShowcase = 4;
+	k_EProfileCustomizationTypeBadges = 5;
+	k_EProfileCustomizationTypeFavoriteGame = 6;
+	k_EProfileCustomizationTypeScreenshotShowcase = 7;
+	k_EProfileCustomizationTypeCustomText = 8;
+	k_EProfileCustomizationTypeFavoriteGroup = 9;
+	k_EProfileCustomizationTypeRecommendation = 10;
+	k_EProfileCustomizationTypeWorkshopItem = 11;
+	k_EProfileCustomizationTypeMyWorkshop = 12;
+	k_EProfileCustomizationTypeArtworkShowcase = 13;
+	k_EProfileCustomizationTypeVideoShowcase = 14;
+	k_EProfileCustomizationTypeGuides = 15;
+	k_EProfileCustomizationTypeMyGuides = 16;
+	k_EProfileCustomizationTypeAchievements = 17;
+	k_EProfileCustomizationTypeGreenlight = 18;
+	k_EProfileCustomizationTypeMyGreenlight = 19;
+	k_EProfileCustomizationTypeSalien = 20;
+	k_EProfileCustomizationTypeLoyaltyRewardReactions = 21;
+	k_EProfileCustomizationTypeSingleArtworkShowcase = 22;
+	k_EProfileCustomizationTypeAchievementsCompletionist = 23;
+}
+
+enum EPublishedFileStorageSystem {
+	k_EPublishedFileStorageSystemInvalid = 0;
+	k_EPublishedFileStorageSystemLegacyCloud = 1;
+	k_EPublishedFileStorageSystemDepot = 2;
+	k_EPublishedFileStorageSystemUGCCloud = 3;
+}
+
+enum ECloudStoragePersistState {
+	k_ECloudStoragePersistStatePersisted = 0;
+	k_ECloudStoragePersistStateForgotten = 1;
+	k_ECloudStoragePersistStateDeleted = 2;
+}
+
+enum EBluetoothDeviceType {
+	k_BluetoothDeviceType_Invalid = 0;
+	k_BluetoothDeviceType_Unknown = 1;
+	k_BluetoothDeviceType_Phone = 2;
+	k_BluetoothDeviceType_Computer = 3;
+	k_BluetoothDeviceType_Headset = 4;
+	k_BluetoothDeviceType_Headphones = 5;
+	k_BluetoothDeviceType_Speakers = 6;
+	k_BluetoothDeviceType_OtherAudio = 7;
+	k_BluetoothDeviceType_Mouse = 8;
+	k_BluetoothDeviceType_Joystick = 9;
+	k_BluetoothDeviceType_Gamepad = 10;
+	k_BluetoothDeviceType_Keyboard = 11;
+}
+
+enum EStorageBlockContentType {
+	k_EStorageBlockContentType_Invalid = 0;
+	k_EStorageBlockContentType_Unknown = 1;
+	k_EStorageBlockContentType_FileSystem = 2;
+	k_EStorageBlockContentType_Crypto = 3;
+	k_EStorageBlockContentType_Raid = 4;
+}
+
+enum EStorageBlockFileSystemType {
+	k_EStorageBlockFileSystemType_Invalid = 0;
+	k_EStorageBlockFileSystemType_Unknown = 1;
+	k_EStorageBlockFileSystemType_VFat = 2;
+	k_EStorageBlockFileSystemType_Ext4 = 3;
 }

@@ -44,6 +44,8 @@ enum EStartFindingMatchResult {
 	k_EStartFindingMatchResult_DifficultyNotUnlocked = 130;
 	k_EStartFindingMatchResult_CoachesNotAllowedInParty = 131;
 	k_EStartFindingMatchResult_MatchmakingBusy = 132;
+	k_EStartFindingMatchResult_SteamChinaBanned = 133;
+	k_EStartFindingMatchResult_SteamChinaInvalidMixedParty = 134;
 }
 
 message CMsgStartFindingMatch {
@@ -105,7 +107,16 @@ message CMsgReadyUpStatus {
 message CMsgAbandonCurrentGame {
 }
 
+message CMsgLobbyScenarioSave {
+	optional int32 version = 1;
+	optional bytes data = 2;
+}
+
 message CMsgPracticeLobbySetDetails {
+	message AbilityDraftSpecificDetails {
+		optional bool shuffle_draft_order = 1;
+	}
+
 	optional uint64 lobby_id = 1;
 	optional string game_name = 2;
 	repeated .CLobbyTeamDetails team_details = 3;
@@ -147,6 +158,9 @@ message CMsgPracticeLobbySetDetails {
 	optional bool custom_game_penalties = 47;
 	optional string lan_host_ping_location = 48;
 	optional uint32 league_node_id = 49;
+	repeated uint32 requested_hero_ids = 50;
+	optional .CMsgLobbyScenarioSave scenario_save = 51;
+	optional .CMsgPracticeLobbySetDetails.AbilityDraftSpecificDetails ability_draft_specific_details = 52;
 }
 
 message CMsgPracticeLobbyCreate {

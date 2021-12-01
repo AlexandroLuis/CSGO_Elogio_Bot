@@ -166,6 +166,7 @@ enum ETFGCMsg {
 	k_EMsgGCQuestStrangeEvent = 6577;
 	k_EMsgGC_AcceptLobbyInvite = 6578;
 	k_EMsgGC_AcceptLobbyInviteReply = 6579;
+	k_EMsgGC_SDRTicket = 6580;
 	k_EMsgGC_ProcessMatchVoteKick = 6581;
 	k_EMsgGC_ProcessMatchVoteKickResponse = 6582;
 	k_EMsgGCDev_GrantWarKill = 10001;
@@ -900,6 +901,7 @@ message CMsgGameServerMatchmakingStatus {
 	optional bool server_trusted = 11;
 	optional bool server_dedicated = 12;
 	optional uint32 strict = 17;
+	optional string fake_ip = 25;
 	repeated .CMsgGameServerMatchmakingStatus.Player players = 13;
 	optional .TF_GC_GameState game_state = 14 [default = TF_GC_GAMESTATE_STATE_INIT];
 	optional .CMsgGameServerMatchmakingStatus.Event event = 15 [default = None];
@@ -1615,4 +1617,8 @@ message GCQuestStrangeEvent {
 	optional uint64 quest_id = 3;
 	optional uint32 strange_event_id = 4;
 	optional uint32 score = 5;
+}
+
+message CMsgSDRTicket {
+	optional bytes serialized_ticket = 1;
 }

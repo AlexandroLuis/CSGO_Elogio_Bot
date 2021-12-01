@@ -1,5 +1,6 @@
 import "steammessages.proto";
 import "econ_shared_enums.proto";
+import "gcsdk_gcmessages.proto";
 
 option optimize_for = SPEED;
 option cc_generic_services = false;
@@ -115,6 +116,7 @@ enum EGCItemMsg {
 	k_EMsgGCApplyAutograph = 2523;
 	k_EMsgGCToGCWebAPIAccountChanged = 2524;
 	k_EMsgGCClientVersionUpdated = 2528;
+	k_EMsgGCToGCUpdateWelcomeMsg = 2529;
 	k_EMsgGCItemPurgatory_FinalizePurchase = 2531;
 	k_EMsgGCItemPurgatory_FinalizePurchaseResponse = 2532;
 	k_EMsgGCItemPurgatory_RefundPurchase = 2533;
@@ -192,6 +194,7 @@ enum EGCItemMsg {
 	k_EMsgGCToGCPurchaseSucceeded = 2608;
 	k_EMsgClientToGCGetLimitedItemPurchaseQuantity = 2609;
 	k_EMsgClientToGCGetLimitedItemPurchaseQuantityResponse = 2610;
+	k_EMsgGCToGCBetaDeleteItems = 2611;
 }
 
 enum EItemPurgatoryResponse_Finalize {
@@ -448,6 +451,12 @@ message CMsgGCToGCGrantAccountRolledItems {
 	repeated .CMsgGCToGCGrantAccountRolledItems.Item items = 2;
 	optional uint32 audit_action = 3;
 	optional uint64 audit_data = 4;
+}
+
+message CMsgGCToGCBetaDeleteItems {
+	optional uint32 account_id = 1;
+	repeated uint64 item_ids = 2;
+	repeated uint32 item_defs = 3;
 }
 
 message CMsgGCToGCGrantSelfMadeItemToAccount {
@@ -780,6 +789,13 @@ message CProtoItemSocket_Strange {
 	optional uint32 strange_value = 3;
 }
 
+message CProtoItemSocket_Strange_DESERIALIZE_FROM_STRING_ONLY {
+	optional .CProtoItemSocket socket = 1;
+	optional uint32 strange_type = 2;
+	optional uint32 strange_value = 3;
+	optional uint32 ability_effect = 4;
+}
+
 message CProtoItemSocket_Spectator {
 	optional .CProtoItemSocket socket = 1;
 	optional uint32 games_viewed = 2;
@@ -933,6 +949,7 @@ message CMsgProcessTransactionOrder {
 message CMsgGCToGCStoreProcessCDKeyTransaction {
 	optional .CMsgProcessTransactionOrder order = 1;
 	optional uint32 reason_code = 2;
+	optional uint32 partner = 3;
 }
 
 message CMsgGCToGCStoreProcessCDKeyTransactionResponse {
@@ -941,7 +958,6 @@ message CMsgGCToGCStoreProcessCDKeyTransactionResponse {
 
 message CMsgGCToGCStoreProcessSettlement {
 	optional .CMsgProcessTransactionOrder order = 1;
-	optional uint32 partner = 2;
 }
 
 message CMsgGCToGCStoreProcessSettlementResponse {
@@ -1016,16 +1032,6 @@ message CMsgBannedWordList {
 	repeated string banned_words = 2;
 }
 
-message CEcon_FlushInventoryCache_Request {
-	optional uint64 steamid = 1;
-	optional uint32 appid = 2;
-	optional uint64 contextid = 3;
-}
-
-message CEcon_FlushInventoryCache_Response {
-	optional bool success = 1;
-}
-
 message CMsgGCToGCFlushSteamInventoryCache {
 	message Key {
 		optional uint64 steamid = 1;
@@ -1058,13 +1064,6 @@ message CMsgGCToGCGetInfuxIntervalStatsResponse {
 message CMsgGCToGCPurchaseSucceeded {
 }
 
-message CExtraMsgBlock {
-	optional uint32 msg_type = 1;
-	optional bytes contents = 2;
-	optional uint64 msg_key = 3;
-	optional bool is_compressed = 4;
-}
-
 message CMsgClientToGCGetLimitedItemPurchaseQuantity {
 	optional uint32 item_def = 1;
 }
@@ -1082,4 +1081,10 @@ message CMsgClientToGCGetLimitedItemPurchaseQuantityResponse {
 
 	optional .CMsgClientToGCGetLimitedItemPurchaseQuantityResponse.EResponse result = 1 [default = k_eInternalError];
 	optional uint32 quantity_purchased = 2;
+}
+
+message CMsgGCToGCUpdateWelcomeMsg {
+	optional bool server = 1;
+	optional .CExtraMsgBlock new_msg = 2;
+	optional bool broadcast = 3;
 }

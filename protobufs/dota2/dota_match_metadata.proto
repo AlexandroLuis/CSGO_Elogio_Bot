@@ -71,6 +71,13 @@ message CDOTAMatchMetadata {
 			optional uint32 action_id = 1;
 			optional uint32 quantity = 2;
 			optional uint32 audit = 3;
+			optional bool requires_win = 4;
+			optional uint64 audit_data = 5;
+		}
+
+		message CandyGrant {
+			optional uint32 points = 1;
+			optional uint32 reason = 2;
 		}
 
 		message EventData {
@@ -95,6 +102,9 @@ message CDOTAMatchMetadata {
 			optional uint32 cavern_crawl_map_variant = 20;
 			optional uint32 team_wager_bonus_pct = 21;
 			optional uint32 wager_streak_pct = 22;
+			repeated .CDOTAMatchMetadata.Team.CandyGrant candy_points_granted = 23;
+			optional uint32 active_season_id = 24;
+			optional bool cavern_crawl_half_credit = 25;
 		}
 
 		message GauntletProgress {
@@ -160,6 +170,7 @@ message CDOTAMatchMetadata {
 			optional .EDOTAMMRBoostType rank_mmr_boost_type = 46 [default = k_EDOTAMMRBoostType_None];
 			optional .CDOTAMatchMetadata.Team.GauntletProgress gauntlet_progress = 47;
 			repeated .CDOTAMatchMetadata.Team.Player.ContractProgress contract_progress = 48;
+			repeated uint32 guild_ids = 49;
 		}
 
 		optional uint32 dota_team = 1;
